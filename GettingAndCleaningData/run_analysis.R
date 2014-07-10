@@ -13,7 +13,7 @@
 debug       <- TRUE
 n           <- -1
 basedir     <- paste(getwd(), "UCI HAR Dataset", sep="/"); basedir
-inputdirs   <- sapply( c("test","train"), function(dir) { paste(basedir, dir, sep="/") }); inputdirs
+inputdirs   <- sapply( c("test/Inertial Signals","train/Inertial Signals"), function(dir) { paste(basedir, dir, sep="/") }); inputdirs
 outputdir   <- sapply( c("merged"),       function(dir) { paste(basedir, dir, sep="/") }); inputdirs
 zipurl      <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 zipfile     <- "./UCI HAR Dataset.zip"
@@ -25,7 +25,7 @@ data.mean.sd.file <- "data.mean.sd.csv"
 # Run Program
 main <- function() {
   # Merges the training and the test sets to create one data set.
-  download.zipfile()
+  download.zipfile(zipurl,zipfile)
   if( !file.exists(outputdir) ) {
     merge.dirs(inputdirs=inputdirs, outputdir=outputdir)  
   }
@@ -38,19 +38,29 @@ main <- function() {
   # Uses descriptive activity names to name the activities in the data set
   # Appropriately labels the data set with descriptive variable names.
   data.mean.sd <- extract.summary(mergedfiles,n=n)
-  write.csv2(data.mean.sd, data.mean.sd.file)
+  write.table(data.mean.sd, data.mean.sd.file, sep=",", quote=FALSE, col.names=FALSE)
   head(readLines(data.mean.sd.file))
     
   
   # Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
-  data.avg <- sapply( c("[Xy]","body.acc","body.gyro","total.acc"), function(label) {
+  data.avg <- data.frame( sapply( c("body.acc","body.gyro","total.acc"), function(label) {
     mean( data.mean.sd[ grep(paste("^",label,".*\\.mean$",sep=""), rownames(data.mean.sd)), ] )
-  })
+  }))
   colnames(data.avg) <- c("value")
-  write.csv(data.avg, data.avg.file)
+  write.table(data.avg, data.avg.file, sep=",", quote=FALSE, col.names=FALSE)
   head(readLines(data.avg.file))
   
   list(data.mean.sd, data.avg)
+}
+
+
+download.zipfile <- function(zipurl,zipfile) {
+  # Download and unzip data
+  if( !file.exists(zipfile) ) {
+    download.file(zipurl,zipfile, method="wget")  
+    unzip(zipfile)
+  }  
+  zipfile
 }
 
 # Returns a pretty string label based on the filename, with optional extension
@@ -89,14 +99,6 @@ extract.summary <- function(mergedfiles,n=-1) {
   frame
 }
 
-download.zipfile <- function() {
-  # Download and unzip data
-  if( !file.exists(zipfile) ) {
-    download.file(zipurl,zipfile, method="wget")  
-    unzip(zipfile)
-  }  
-  zipfile
-}
 
 # Merges the training and the test sets to create a single data set.
 # TODO: file renaming is hardcoded to s/test|train/merged/g
