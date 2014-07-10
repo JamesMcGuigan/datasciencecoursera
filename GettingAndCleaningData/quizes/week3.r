@@ -102,3 +102,22 @@ for(name in names(q)) {
 }
 which(q3joined$Quantile == "50%" & !is.na(q3joined$Rank) & q3joined$Rank <= 38) # count = 1
 
+
+# Week 4 - Q2  Remove the commas from the GDP numbers in millions of dollars and average them. What is the average? 
+w4q2countries <- q3joined[!is.na(q3joined$Rank),]
+mean(w4q2countries$GDP)
+
+countryNames <- w4q2countries$Name;
+countryNames[5] <- ""
+countryNames[91] <- ""
+grep("^United", countryNames) # = 158 184 189 (length: 3)
+
+
+# Week 4 - Q4
+w4q4joined <- merge(q3EduData, q3GdpData, by="CountryCode")
+w4q4joined <- w4q4joined[ order(q3joined$GDP, na.last=TRUE), ]
+names(w4q4joined)
+
+length(w4q4joined[ grep( "Fiscal year end: June", w4q4joined$Special.Notes), ]$Special.Notes) # = 13
+
+
