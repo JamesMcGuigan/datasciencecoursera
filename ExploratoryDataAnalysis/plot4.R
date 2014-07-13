@@ -62,32 +62,20 @@ render4 <- function() {
   data <- data.process( data.read(ziptxt.sample) ); data
   summary(data)
   
-  plot1(data)
-  dev.copy(png,"./plot1.png")
-  dev.off()
-  
-  plot2(data)
-  dev.copy(png,"./plot2.png")
-  dev.off()
-
-  plot3(data)
-  dev.copy(png,"./plot3.png")
-  dev.off()
-
+  png('./plotGlobal.png')
   plotGlobal(data)
-  dev.copy(png,"./plotGlobal.png")
   dev.off()  
   
-  plotVoltage(data)
-  dev.copy(png,"./plotVoltage.png")
+  png("./plotVoltage.png")
+  plotVoltage(data)  
   dev.off()
   
+  png("./plotReactive.png")
   plotReactive(data)
-  dev.copy(png,"./plotReactive")
   dev.off()
   
+  png("./plot4.png")
   plot4(data)
-  dev.copy(png,"./plot4.png")
   dev.off()  
 }
 

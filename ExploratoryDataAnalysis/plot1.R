@@ -15,8 +15,8 @@ plot1 <- function(data) {
 
 render1 <- function() {
   data <- data.process( data.read(ziptxt.sample) );
+  png("./plot1.png")
   plot1(data)
-  dev.copy(png,"./plot1.png")
   dev.off()  
 }
 render1()

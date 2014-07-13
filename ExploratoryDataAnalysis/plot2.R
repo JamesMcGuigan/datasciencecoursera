@@ -21,8 +21,8 @@ plot2 <- function(data) {
 
 render2 <- function() {
   data <- data.process( data.read(ziptxt.sample) );
+  png("./plot2.png")
   plot2(data)
-  dev.copy(png,"./plot2.png")
   dev.off()  
 }
 render2()

@@ -36,8 +36,9 @@ plot3 <- function(data, labels=TRUE) {
 
 render3 <- function() {
   data <- data.process( data.read(ziptxt.sample) ); data
+  
+  png("./plot3.png")
   plot3(data, labels=TRUE)
-  dev.copy(png,"./plot3.png")
   dev.off()  
 }
 render3()
