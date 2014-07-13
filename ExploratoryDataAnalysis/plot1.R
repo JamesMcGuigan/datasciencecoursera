@@ -5,13 +5,17 @@
 source("./plotData.R")
 
 plot1 <- function(data) {
-  with(data, hist(Global_active_power, 
+  with(data, histogram(Global_active_power, 
                   col   = "red",
                   main  = "Global Active Power",
-                  xlab  = "Global Active Power (kilowatts)"))
+                  xlab  = "Global Active Power (kilowatts)"),
+                  add   = TRUE
+       )
 }
 
-data <- data.process( data.read(ziptxt.sample) );
-plot1(data)
-dev.copy(png,"./plot1.png")
-dev.off()
+render1 <- function() {
+  data <- data.process( data.read(ziptxt.sample) );
+  plot1(data)
+  dev.copy(png,"./plot1.png")
+  dev.off()  
+}

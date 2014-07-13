@@ -19,7 +19,9 @@ plot2 <- function(data) {
   ))
 }
 
-data <- data.process( data.read(ziptxt.sample) );
-plot2(data)
-dev.copy(png,"./plot2.png")
-dev.off()
+render2 <- function() {
+  data <- data.process( data.read(ziptxt.sample) );
+  plot2(data)
+  dev.copy(png,"./plot2.png")
+  dev.off()  
+}
