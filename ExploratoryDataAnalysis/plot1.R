@@ -19,3 +19,4 @@ render1 <- function() {
   dev.copy(png,"./plot1.png")
   dev.off()  
 }
+render1()

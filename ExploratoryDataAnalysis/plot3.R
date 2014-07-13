@@ -40,3 +40,4 @@ render3 <- function() {
   dev.copy(png,"./plot3.png")
   dev.off()  
 }
+render3()

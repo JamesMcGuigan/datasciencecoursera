@@ -25,3 +25,4 @@ render2 <- function() {
   dev.copy(png,"./plot2.png")
   dev.off()  
 }
+render2()
