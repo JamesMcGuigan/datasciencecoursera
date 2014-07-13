@@ -14,7 +14,7 @@ plot2 <- function(data) {
     xlab = "",
     scales = list(
       x = list( at = as.numeric(daynames)*24*60, labels = daynames, tck = c(1,0) ),
-      y = list( limits = c(0,max(Global_active_power)) )
+      y = list( limits = c(0,max(Global_active_power)+1) )
     )
   ))
 }

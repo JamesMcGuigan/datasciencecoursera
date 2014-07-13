@@ -9,7 +9,7 @@ ziptxt.sample <- "./household_power_consumption.sample.txt"
 ziptxtN   <- 2075260 # countLines(ziptxt);
 daynames  <- c("Monday","Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 daynames  <- ordered(daynames, levels=daynames)
-dayfilter <- ordered(c("Thursday", "Friday"), levels=daynames)
+dayfilter <- c("2/1/2007", "3/1/2007")
 
 ##### Helper Functions #####
 
@@ -31,27 +31,42 @@ date2weekstamp <- function(dates) {
 ##### Download Data #####
 
 data.download <- function() {
-  if( !file.exists(zipfile)  ) { download.file(zipurl, zipfile, method="wget"); unzip(zipfile); }
+  if( !file.exists(zipfile) ) { download.file(zipurl, zipfile, method="wget"); }
+  if( !file.exists(ziptxt)  ) { unzip(zipfile); }
   if( !file.exists(ziptxt.sample) ) {
-    # Main dataset is sorted by date, extract small working sample for debugging
-    command <- paste("( head -n 1", ziptxt, "; tail -n +2", ziptxt, " | shuf -n 1000 ) > ", ziptxt.sample)
-    system( command )
+    system.time({
+      print(paste("Reading file:",zipfile))
+      data <- data.read(ziptxt)
+      data.filtered <- data.filter(data)
+      write.table(data.filtered, ziptxt.sample, sep=";", quote=FALSE, row.names=FALSE)
+    })
+    
+    # Main dataset is sorted by date, extract small random working sample for debugging
+    #command <- paste("( head -n 1", ziptxt, "; tail -n +2", ziptxt, " | shuf -n 1000 ) > ", ziptxt.sample)
+    #system( command )
   }  
 }
 data.read <- function(ziptxt, nrows=-1, skip=0) {
-  data.download();
-  read.table(ziptxt, skip=skip, nrows=nrows, header=TRUE, sep=";", na.strings="?", colClasses=c("character","character", rep("numeric",7) ))
+  if( !exists("nrows") ) { nrows <- -1 }
+  if( !exists("skip")  ) { skip  <-  50000 }
+  if( !file.exists(ziptxt) ) { data.download(); }
+  
+  data  <- read.table(ziptxt, skip=skip, nrows=nrows, header=TRUE, sep=";", na.strings="?", colClasses=c("character","character", rep("numeric",7) ))
+  names(data) <- names( read.table(ziptxt, nrows=1, header=TRUE, sep=";", na.strings="?", colClasses=c("character","character", rep("numeric",7) )))  # skip > 0 ignores headers
+  data
 };
+data.filter <- function(data) {
+  data[ data$Date %in% dayfilter, ]
+}
 data.process <- function(data) {
   # Extract, format and sort
-  data$Date      <- as.POSIXct(strptime(data$Date, format = "%d/%m/%Y"), origin = "1960-01-01")
-  data$Weekday   <- ordered(weekdays(data$Date), levels=daynames)
+  data$Datect    <- as.POSIXct(strptime(data$Date, format = "%d/%m/%Y"), origin = "1960-01-01")
+  data$Weekday   <- ordered(weekdays(data$Datect), levels=daynames)
   data$WeekdayN  <- match(data$Weekday, daynames);
   data$Hour      <- data$WeekdayN*24*60 + as.numeric(substr(data$Time, 0, 2))
   data$Timestamp <- str2Timestamp(data$Time)
-  data$Weekstamp <- date2weekstamp(data$Date) + str2Timestamp(data$Time)
+  data$Weekstamp <- date2weekstamp(data$Datect) + str2Timestamp(data$Time)
   
-  data           <- data[data$Weekday %in% dayfilter, ] # filter by day range
   data           <- data[ order(data$Weekstamp), ] # sort by Timestamp
   data
 }

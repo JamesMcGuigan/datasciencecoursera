@@ -4,36 +4,42 @@
 
 source("./plotData.R")
 
+xyplot(Sub_metering_1 + Sub_metering_2 + Sub_metering_3 ~ Weekstamp,
+       data, type="l",
+       allow.multiple = TRUE, 
+       auto.key = list(space = "top",
+                       points=FALSE, lines=TRUE ),
+       par.settings = list(superpose.line = list(col = rainbow(3))))
+
+
 plot3 <- function(data) {
-  with(Sub_metering_1 ~ Weekstamp, data, 
-    xyplot(panel=function(){
-      xyplot(
-        Sub_metering_1 ~ Weekstamp, 
-        data, 
-        type = "l",
-        col  = "black",
-        ylab = "Energy Sub Metering",
-        xlab = "",
-        scales = list(
-          x = list( at = as.numeric(daynames)*24*60, labels = daynames, tck = c(1,0) )
-        )
-    })
-  ))
-  with(data, plot(
-    Sub_metering_2 ~ Weekstamp, 
-    data, 
-    type = "l",
-    col  = "red",
-    ylab = "Energy Sub Metering",
-    xlab = "",
-    scales = list(
-      x = list( at = as.numeric(daynames)*24*60, labels = daynames, tck = c(1,0) )
-    )
-  ))
-  
+  colors <- c("black","red","blue")
+  xyplot(Sub_metering_1 + Sub_metering_2 + Sub_metering_3 ~ Weekstamp, 
+         data = data, 
+         allow.multiple = TRUE, 
+         aspect = 1,
+         type = "l",
+         ylab = "Energy Sub Metering",
+         xlab = "",
+         par.settings = list(superpose.line=list(col = colors)),
+         
+         auto.key = list(
+           lines  = T,
+           points = F,
+           border = T,
+           space  = "inside",
+           corner = c(1, 1),
+           padding.text = 5,
+           col = colors
+         ),
+         scales = list(
+           x = list( at = as.numeric(daynames)*24*60, labels = daynames, tck = c(1,0) ),
+           y = list( tck = c(1,0), limits=c(0,26) )
+         )
+       )
 }
 
-data <- data.process( data.read(ziptxt.sample) );
+data <- data.process( data.read(ziptxt.sample) ); data
 plot3(data)
-#dev.copy(png,"./plot3.png")
-#dev.off()
+dev.copy(png,"./plot3.png")
+dev.off()
