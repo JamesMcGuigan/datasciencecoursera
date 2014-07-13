@@ -4,14 +4,6 @@
 
 source("./plotData.R")
 
-xyplot(Sub_metering_1 + Sub_metering_2 + Sub_metering_3 ~ Weekstamp,
-       data, type="l",
-       allow.multiple = TRUE, 
-       auto.key = list(space = "top",
-                       points=FALSE, lines=TRUE ),
-       par.settings = list(superpose.line = list(col = rainbow(3))))
-
-
 plot3 <- function(data) {
   colors <- c("black","red","blue")
   xyplot(Sub_metering_1 + Sub_metering_2 + Sub_metering_3 ~ Weekstamp, 
