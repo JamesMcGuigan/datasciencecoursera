@@ -6,10 +6,13 @@
 
 # R data files from past sessions
 .Rdata
-ProgrammingAssignment2
 .Rproj.user
+.Rapp.history 
+.Rhistory 
 
 # Project Specific Data
 data
 UCI HAR Dataset
 UCI HAR Dataset.zip
+modules/
+ProgrammingAssignment2
